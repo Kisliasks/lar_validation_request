@@ -6,11 +6,9 @@ namespace App\Http\Request;
 
 use App\Http\DTO\OfferDto;
 use Illuminate\Foundation\Http\FormRequest;
-use ReflectionClass;
 
 class OfferCreateFormRequest extends FormRequest
 {
-
     private const PROPERTY_ALLOWS_NULL_VALUE = 'nullable';
     private const PROPERTY_REQUIRED_VALUE = 'required';
 
@@ -19,10 +17,11 @@ class OfferCreateFormRequest extends FormRequest
      */
     public function rules(): array
     {
-        $reflection = new ReflectionClass(OfferDto::class);
+        $reflection = new \ReflectionClass(OfferDto::class);
         $properties = $reflection->getProperties();
         
         foreach ($properties as $property) {
+            /** @var \ReflectionAttribute<mixed>[] $attributes */
             $attributes = $property->getAttributes();
             $arguments = [];
 
@@ -34,12 +33,14 @@ class OfferCreateFormRequest extends FormRequest
                          array_push($arguments, $key . ":" . $value);
                     }
                 }
-
-                $info = self::PROPERTY_REQUIRED_VALUE;
-                if ($property->getType()->allowsNull()) {
-                    $info = self::PROPERTY_ALLOWS_NULL_VALUE;
-                }
-                $propertyDescription = [$info,  $property->getType()->getName()];
+                $entryRules = match ($property->getType()->allowsNull()) {
+                    true => self::PROPERTY_ALLOWS_NULL_VALUE,
+                    false => self::PROPERTY_REQUIRED_VALUE,
+                };
+                $propertyDescription = [
+                    $entryRules,
+                    $property->getType()->getName(),
+                ];
                 foreach ($arguments as $argument) {
                     array_push($propertyDescription, $argument);
                 }

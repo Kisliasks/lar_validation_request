@@ -5,7 +5,7 @@ namespace App\Http\DTO;
 use App\Http\Rules\DtoRule;
 use Illuminate\Contracts\Support\Arrayable;
 
-class OfferDto implements Arrayable
+readonly class OfferDto implements Arrayable
 {
     #[DtoRule(max: 255)]
     public string $title;
@@ -17,7 +17,10 @@ class OfferDto implements Arrayable
     #[DtoRule(date_format: 'Y-m-d H:i:s')]
     public string $publishAt;
 
-    public function toArray()
+    /**
+     * @return array
+     */
+    public function toArray(): array
     {
         return [
             'title' => $this->title,
@@ -28,10 +31,7 @@ class OfferDto implements Arrayable
         ];
     }
 
-
     /**
-     * Set the value of title
-     *
      * @return void
      */ 
     public function setTitle(string $title): void
@@ -40,8 +40,6 @@ class OfferDto implements Arrayable
     }
 
     /**
-     * Set the value of price
-     *
      * @return void
      */ 
     public function setPrice(int $price): void
@@ -50,8 +48,6 @@ class OfferDto implements Arrayable
     }
 
     /**
-     * Set the value of description
-     *
      * @return void
      */ 
     public function setDescription(?string $description): void
@@ -60,8 +56,6 @@ class OfferDto implements Arrayable
     }
 
     /**
-     * Set the value of isActive
-     *
      * @return void
      */ 
     public function setIsActive(bool $isActive): void
@@ -69,11 +63,7 @@ class OfferDto implements Arrayable
         $this->isActive = $isActive;
     }
 
-    
-
     /**
-     * Set the value of publishAt
-     *
      * @return void
      */ 
     public function setPublishAt(string $publishAt): void
